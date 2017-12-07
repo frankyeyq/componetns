@@ -20,6 +20,12 @@
                 width: 100px;
                 height: 100px;
             }
+            .date-container td.today span{
+                border-radius: 50%;
+                padding: 10px;
+                background: red;
+                color: white;
+            }
             .date-container tr td:nth-child(1) {
                 background: lightgray;
             }
@@ -83,6 +89,11 @@
                     }
                     that.renderMonthOfYear(month+1, year);
                 });
+                document.getElementById('today').addEventListener('click', function() {
+                    month = new Date().getMonth();
+                    year = new Date().getFullYear();
+                    that.renderMonthOfYear(month+1, year);
+                });
             }
             Calendar.prototype.getFirstDayOfMonthAndYear = function(month, year) {
                 return new Date(year, month-1, 1).getDay();
@@ -107,7 +118,7 @@
                 let lastMonthDays = this.getDaysOfMonth(month-1, year);
                 // 需要渲染的date数组
                 let date = [];
-                // 补充上一个月的天数
+                // 填充上一个月的天数
                 for (let i=lastMonthDays-day+1; i<lastMonthDays+1;i++) {
                     if (i === 1) {
                         date.push((month-1) + '月' + i + '日');
@@ -115,6 +126,7 @@
                         date.push(i+'日');
                     }
                 }
+                // 填充当前月的天数
                 for (let i=1;i<=days; i++) {
                     if (i === 1) {
                         date.push(month + '月' + i + '日');
@@ -122,6 +134,7 @@
                         date.push(i+'日');
                     }
                 }
+                // 填充下个月的天数
                 let restDate = this.totalDatePerMonth - date.length;
                 for (let i=1; i<=restDate; i++) {
                     if (i === 1) {
@@ -131,9 +144,16 @@
                     }
                 }
                 let tr = document.createElement('tr');
+                console.log(lastMonthDays);
+                
                 for (let i=0; i<date.length; i++) {
                     let td = document.createElement('td');
-                    td.innerHTML = date[i];
+                    td.innerHTML = `<span>${date[i]}</span>`;
+                    if (year === new Date().getFullYear() && month === new Date().getMonth()+1) {
+                        if ((i+1) === (day+new Date().getDate())) {
+                            td.classList.add('today');
+                        }
+                    }
                     tr.appendChild(td);
                     if ((i+1)%7 === 0) {
                         document.querySelector('.date-container').appendChild(tr);
