@@ -4,8 +4,137 @@
         <title></title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            *{
+                margin: 0;
+                padding: 0;
+            }
+            .fullPage {
+                width: 100%;
+                height: 100vh;
+                overflow: hidden;
+                position: relative;
+            }
+            .fullPage section{
+                width: 100%;
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                -webkit-transition: transform 1s;
+                -moz-transition: transform 1s;
+                transition: transform 1s;
+            }
+            .fullPage section div{
+            }
+            .fullPage section:nth-child(1){
+                background: #99CC33;
+            }
+            .fullPage section:nth-child(2){
+                background: #FF9900;
+            }
+            .fullPage section:nth-child(3){
+                background: #FFCC00;
+            }
+            .fullPage section:nth-child(4){
+                background: #FF0033;
+            }
+            .fullPage .buttons{
+                position: absolute;
+                top: 50%;
+                right: 20px;
+                transform: translateY(-50%);
+            }
+            .fullPage .buttons i{
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                margin-bottom: 10px;
+                background: gray;
+                display: block;
+                opacity: 0.85;
+                cursor: pointer;
+            }
+        </style>
     </head>
     <body>
-    
+        <div class="fullPage">
+            <section>
+                <div>
+                    1
+                </div>
+            </section>
+            <section>
+                <div>
+                    2
+                </div>
+            </section>
+            <section>
+                <div>
+                    3
+                </div>
+            </section>
+            <section>
+                <div>
+                    4
+                </div>
+            </section>
+            <div class="buttons">
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+            </div>
+        </div>
+        <script>
+            function FullPage(opts) {
+                this.currentPage = 1;
+                this.totalPage = 4;
+                let that = this;
+                let timer;      
+                this.swiperFlag = false;          
+                opts.element.addEventListener('wheel', function(e) {
+                    if (e.deltaY > 0) {
+                        if (that.swiperFlag) return ;
+                        that.goUp();
+                    } else {
+                        if (that.swiperFlag) return ;
+                        that.goDown();
+                    }
+                })
+                opts.element.children[0].addEventListener('transitionend', function() {
+                    that.swiperFlag = false;
+                })
+                this.bindButtons();
+            }
+            FullPage.prototype.goUp = function() {
+                let currentPage = this.currentPage;
+                this.currentPage = Math.min(++this.currentPage, this.totalPage);
+                if (currentPage === this.currentPage) return;
+                this.goPage();
+            }
+            FullPage.prototype.goDown = function() {
+                let currentPage = this.currentPage;
+                this.currentPage = Math.max(--this.currentPage, 1);
+                if (currentPage === this.currentPage) return;
+                this.goPage();
+            }
+            FullPage.prototype.goPage = function() {
+                this.swiperFlag = true;
+                document.querySelectorAll('.fullPage section').forEach(item => {
+                    item.style.transform = `translateY(-${100 * (this.currentPage-1)}%)`
+                })
+            }
+            FullPage.prototype.bindButtons = function() {
+                let that = this;
+                document.querySelectorAll('.buttons i').forEach((item, index) => {
+                    item.addEventListener('click', function() {
+                        that.currentPage = index+1;
+                        that.goPage();
+                    })
+                })
+            }
+            new FullPage({element: document.querySelector('.fullPage')})
+        </script>
     </body>
 </html>
