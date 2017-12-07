@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>calendar</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            .calendar{
+                width: 100%;
+                text-align: right;
+                background: black;
+            }
+            .calendar thead {
+                background: white;
+            }
+            .calendar tbody{
+                background: white;
+            }
+            .date-container td{
+                width: 100px;
+                height: 100px;
+            }
+            .date-container tr td:nth-child(1) {
+                background: lightgray;
+            }
+            .date-container tr td:nth-child(7) {
+                background: lightgray;
+            }
+            .date-container td.weekend {
+            }
+            .buttons{
+                float: right;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <span class="now-date"></span>
+            <div class="buttons">
+                <button id="prev">&lt;</button>
+                <button id="today">今天</button>
+                <button id="next">&gt;</button>
+            </div>
+        </div>
+        <table class="calendar">
+            <thead>
+                <tr>
+                    <td>日</td>
+                    <td>一</td>
+                    <td>二</td>
+                    <td>三</td>
+                    <td>四</td>
+                    <td>五</td>
+                    <td>六</td>
+                </tr>
+            </thead>
+            <tbody class="date-container">
+            </tbody>
+        </table>
+        <script>
+            function Calendar(opts) {
+                this.totalDatePerMonth = 42;
+                this.init();
+            }
+            Calendar.prototype.init = function() {
+                let month = new Date().getMonth();
+                let year = new Date().getFullYear();
+                let that = this;
+                console.log('年：' + year);
+                console.log('月：' + (month+1));
+                this.renderMonthOfYear(month+1, year);
+                document.getElementById('prev').addEventListener('click', function() {
+                    if (month-- <0) {
+                        month = 12;
+                        year--;
+                    }
+                    that.renderMonthOfYear(month+1, year);
+                });
+                document.getElementById('next').addEventListener('click', function() {
+                    if (month++ === 11) {
+                        month = 0;
+                        year++;
+                    }
+                    that.renderMonthOfYear(month+1, year);
+                });
+            }
+            Calendar.prototype.getFirstDayOfMonthAndYear = function(month, year) {
+                return new Date(year, month-1, 1).getDay();
+            }
+            Calendar.prototype.getDaysOfMonth = function(month, year) {
+                return new Date(year, month, 0).getDate();
+            }
+            Calendar.prototype.renderMonthOfYear = function(month, year) {
+                console.log();
+                let div =  document.querySelector('.date-container');
+                while(div.hasChildNodes()) //当div下还存在子节点时 循环继续
+                {
+                    div.removeChild(div.firstChild);
+                }
+                document.querySelector('.now-date').innerHTML = `${year}年${month}月`
+                // month 是真实的 1就代表1月
+                // 获取这个月的第一天是礼拜几 也表示上个月需要显示几天
+                let day = this.getFirstDayOfMonthAndYear(month, year);
+                // 获取这个月有几天
+                let days = this.getDaysOfMonth(0, year);
+                // 获取上一个月有几天
+                let lastMonthDays = this.getDaysOfMonth(month-1, year);
+                // 需要渲染的date数组
+                let date = [];
+                // 补充上一个月的天数
+                for (let i=lastMonthDays-day+1; i<lastMonthDays+1;i++) {
+                    if (i === 1) {
+                        date.push((month-1) + '月' + i + '日');
+                    } else {
+                        date.push(i+'日');
+                    }
+                }
+                for (let i=1;i<=days; i++) {
+                    if (i === 1) {
+                        date.push(month + '月' + i + '日');
+                    } else {
+                        date.push(i+'日');
+                    }
+                }
+                let restDate = this.totalDatePerMonth - date.length;
+                for (let i=1; i<=restDate; i++) {
+                    if (i === 1) {
+                        date.push((month+1)%12 + '月' + i + '日');
+                    } else {
+                        date.push(i+'日');
+                    }
+                }
+                let tr = document.createElement('tr');
+                for (let i=0; i<date.length; i++) {
+                    let td = document.createElement('td');
+                    td.innerHTML = date[i];
+                    tr.appendChild(td);
+                    if ((i+1)%7 === 0) {
+                        document.querySelector('.date-container').appendChild(tr);
+                        tr = document.createElement('tr');
+                    }
+                }
+                console.log(date);
+                let preDays = 
+                console.log(day);
+                console.log(days);
+                console.log(lastMonthDays);
+            }
+            new Calendar();
+        </script>
+    </body>
+</html>
