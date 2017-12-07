@@ -72,8 +72,6 @@
                 let month = new Date().getMonth();
                 let year = new Date().getFullYear();
                 let that = this;
-                console.log('年：' + year);
-                console.log('月：' + (month+1));
                 this.renderMonthOfYear(month+1, year);
                 document.getElementById('prev').addEventListener('click', function() {
                     if (month-- <0) {
@@ -102,7 +100,6 @@
                 return new Date(year, month, 0).getDate();
             }
             Calendar.prototype.renderMonthOfYear = function(month, year) {
-                console.log();
                 let div =  document.querySelector('.date-container');
                 while(div.hasChildNodes()) //当div下还存在子节点时 循环继续
                 {
@@ -144,8 +141,6 @@
                     }
                 }
                 let tr = document.createElement('tr');
-                console.log(lastMonthDays);
-                
                 for (let i=0; i<date.length; i++) {
                     let td = document.createElement('td');
                     td.innerHTML = `<span>${date[i]}</span>`;
@@ -160,11 +155,6 @@
                         tr = document.createElement('tr');
                     }
                 }
-                console.log(date);
-                let preDays = 
-                console.log(day);
-                console.log(days);
-                console.log(lastMonthDays);
             }
             new Calendar();
         </script>
